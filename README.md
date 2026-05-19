@@ -1,27 +1,39 @@
 # tic-tac-toe-ynov
 
+## Description
+This project implements a simple Tic Tac Toe game in Python. The game allows two players to take turns and play on a 3x3 grid. The first player to align three of their symbols (horizontally, vertically, or diagonally) wins. If the grid is full and no player has aligned three symbols, the game ends in a draw.
 
-Créer un projet Git, dans lequel vous utiliserez le langage de votre choix. Le but est de mettre en application les points suivants :
+## Features
+- Two-player gameplay
+- Input validation for player moves
+- Detection of win and draw conditions
 
-Le formalisme des commits
-Les versions sémantiques
-L'intégration de pre-commit
-Une logique collaborative
-L'application des bonnes pratiques
-Quelques éléments obligatoires :
+## Requirements
+- Python 3.6 or higher
 
-Le dépôt doit être initialisé avec un commit vide, dans la branche main
-Tous les membres du groupes doivent avoir réalisé un ou plusieurs commits (le commit vide ne compte pas ;-))
-Je dois voir des MR/PR dans le dépôt avec des échanges
-Les commits doivent être conventionnels
-Les versions doivent être sémantiques
-Le framework pre-commit doit être utilisés, avec des hooks représentatifs des technos utilisées, pas uniquement ceux de base !
-La documentation n'est pas optionnelle
-Réalisez quelques fonctionnalités, même simples, dans le projet
-Créez au moins deux versions
-Conseils de déroulé et points d'attention :
+## How to Run
+1. Clone the repository.
+2. Navigate to the project directory.
+3. Run the game using the following command:
+   ```
+   python tic_tac_toe.py
+   ```
 
-Initialisez un dépôt git dans un dossier vide
-Pas de commits sur-dimentionnés
-Attention à ce qui va dans le dépôt :)
-La restitution se fait en donnant le lien d'un dépôt Git, sur Gitlab ou Github auquel vous me donnerez accès (alexandre.chaussier@ynov.com).
+## Pre-commit Hooks
+This project uses the `pre-commit` framework to ensure code quality. The following hooks are configured:
+- Trailing whitespace removal
+- End-of-file fixer
+- YAML file checks
+- Python code formatting with `black`
+- Linting with `flake8`
+
+To install the hooks, run:
+```
+pre-commit install
+```
+
+## Semantic Versioning
+This project follows semantic versioning. Tags will be created for each release.
+
+## Contribution
+All commits must follow the conventional commit format. Please create merge requests or pull requests for any changes, and ensure discussions are documented.
