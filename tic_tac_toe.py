@@ -61,12 +61,12 @@ def play_game():
         if winner:
             print_board(board)
             print(f"{winner} wins!")
-            return
+            return winner
 
         if is_full(board):
             print_board(board)
             print("It's a draw!")
-            return
+            return None
 
         current_player = "O" if current_player == "X" else "X"
 
@@ -74,9 +74,19 @@ def play_game():
 def main():
     """Main function to run the game."""
     print("Welcome to Tic Tac Toe!")
+    scores = {"X": 0, "O": 0, "draws": 0}
 
     while True:
-        play_game()
+        winner = play_game()
+
+        if winner:
+            scores[winner] += 1
+        else:
+            scores["draws"] += 1
+
+        print(
+            f"Score - X: {scores['X']} | O: {scores['O']} | Draws: {scores['draws']}"
+        )
 
         replay = input("Play again? (y/n): ").strip().lower()
         if replay != "y":
