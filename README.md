@@ -37,3 +37,4 @@ This project follows semantic versioning. Tags will be created for each release.
 
 ## Contribution
 All commits must follow the conventional commit format. Please create merge requests or pull requests for any changes, and ensure discussions are documented.
+
