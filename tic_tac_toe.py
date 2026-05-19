@@ -33,12 +33,9 @@ def is_full(board):
     return all(cell != " " for row in board for cell in row)
 
 
-def main():
-    """Main function to run the game."""
+def play_game():
+    """Run a single game session."""
     board = [[" " for _ in range(3)] for _ in range(3)]
-
-    print("Welcome to Tic Tac Toe!")
-
     current_player = "X"
 
     while True:
@@ -64,14 +61,26 @@ def main():
         if winner:
             print_board(board)
             print(f"{winner} wins!")
-            break
+            return
 
         if is_full(board):
             print_board(board)
             print("It's a draw!")
-            break
+            return
 
         current_player = "O" if current_player == "X" else "X"
+
+
+def main():
+    """Main function to run the game."""
+    print("Welcome to Tic Tac Toe!")
+
+    while True:
+        play_game()
+
+        replay = input("Play again? (y/n): ").strip().lower()
+        if replay != "y":
+            break
 
 
 if __name__ == "__main__":
