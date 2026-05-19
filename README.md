@@ -7,6 +7,8 @@ This project implements a simple Tic Tac Toe game in Python. The game allows two
 - Two-player gameplay
 - Input validation for player moves
 - Detection of win and draw conditions
+- Replay option at the end of each game
+- Persistent score tracking while replaying
 
 ## Requirements
 - Python 3.6 or higher
