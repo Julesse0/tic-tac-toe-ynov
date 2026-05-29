@@ -44,6 +44,13 @@ docker build -t tic-tac-toe-ynov .
 docker run -it --rm tic-tac-toe-ynov
 ```
 
+### Alternative Windows si `docker` n’est pas reconnu
+```powershell
+$env:Path = 'C:\Program Files\Docker\Docker\resources\bin;' + $env:Path
+docker build -t tic-tac-toe-ynov .
+docker run -it --rm tic-tac-toe-ynov
+```
+
 ## Pre-commit Hooks
 This project uses the `pre-commit` framework to ensure code quality. The following hooks are configured:
 - Trailing whitespace removal
