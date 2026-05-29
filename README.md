@@ -21,6 +21,29 @@ This project implements a simple Tic Tac Toe game in Python. The game allows two
    python tic_tac_toe.py
    ```
 
+# Partie 2 - Conteneurisation Docker
+
+Le conteneur Docker est pensé pour l’image du jeu en mode CLI, avec une base légère, une copie minimale des fichiers utiles et une exécution sans privilèges root.
+
+### Ce que fait le Dockerfile
+- Utilise l’image officielle `python:3.12-slim` comme base légère.
+- Désactive la génération de fichiers bytecode et force la sortie immédiate pour faciliter le debug.
+- Copie uniquement `tic_tac_toe.py` dans l’image finale.
+- Crée un utilisateur non-root dédié pour exécuter l’application.
+- Définit la commande de lancement de l’application avec `python tic_tac_toe.py`.
+- N’expose aucun port réseau, car l’application fonctionne en ligne de commande et ne fournit pas de service réseau.
+
+### Ce que fait le fichier .dockerignore
+- Exclut les fichiers Git, environnements virtuels, caches Python et artefacts de test.
+- Évite d’embarquer des fichiers locaux inutiles dans le contexte de build.
+- Réduit la taille du contexte Docker et améliore le cache de build.
+
+### Construire et lancer l’image
+```bash
+docker build -t tic-tac-toe-ynov .
+docker run -it --rm tic-tac-toe-ynov
+```
+
 ## Pre-commit Hooks
 This project uses the `pre-commit` framework to ensure code quality. The following hooks are configured:
 - Trailing whitespace removal
