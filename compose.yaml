@@ -1,0 +1,26 @@
+services:
+  app:
+    container_name: ${APP_CONTAINER_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APP_IMAGE_NAME}
+    env_file:
+      - .env
+    environment:
+      - PYTHONDONTWRITEBYTECODE=${PYTHONDONTWRITEBYTECODE}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
+      - APP_ENV=${APP_ENV}
+    working_dir: ${APP_WORKDIR}
+    command: ${APP_COMMAND}
+    user: ${APP_USER}
+    volumes:
+      - ./:${APP_WORKDIR}:ro
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import sys; sys.exit(0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s

@@ -1,0 +1,17 @@
+# Local environment file
+.env
+
+# Python build / cache directories
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# Test and lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
