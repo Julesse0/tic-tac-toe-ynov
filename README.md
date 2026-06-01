@@ -21,35 +21,55 @@ This project implements a simple Tic Tac Toe game in Python. The game allows two
    python tic_tac_toe.py
    ```
 
-# Partie 2 - Conteneurisation Docker
 
-Le conteneur Docker est pensé pour l’image du jeu en mode CLI, avec une base légère, une copie minimale des fichiers utiles et une exécution sans privilèges root.
+# Part 2 - Docker containerization
 
-### Ce que fait le Dockerfile
-- Utilise l’image officielle `python:3.12-slim` comme base légère.
-- Désactive la génération de fichiers bytecode et force la sortie immédiate pour faciliter le debug.
-- Copie uniquement `tic_tac_toe.py` dans l’image finale.
-- Crée un utilisateur non-root dédié pour exécuter l’application.
-- Définit la commande de lancement de l’application avec `python tic_tac_toe.py`.
-- N’expose aucun port réseau, car l’application fonctionne en ligne de commande et ne fournit pas de service réseau.
+The Docker image is designed for the CLI version of the game: it uses a lightweight base image, copies only the required files, and runs without root privileges.
 
-### Ce que fait le fichier .dockerignore
-- Exclut les fichiers Git, environnements virtuels, caches Python et artefacts de test.
-- Évite d’embarquer des fichiers locaux inutiles dans le contexte de build.
-- Réduit la taille du contexte Docker et améliore le cache de build.
+### What the Dockerfile does
+- Uses the official `python:3.12-slim` image as a lightweight base.
+- Disables bytecode generation and forces unbuffered output to simplify debugging.
+- Copies only `tic_tac_toe.py` into the final image.
+- Creates a dedicated non-root user to run the application.
+- Sets the container command to `python tic_tac_toe.py`.
+- Does not expose network ports because the application is a CLI tool and does not provide a network service.
 
-### Construire et lancer l’image
+### What the .dockerignore does
+- Excludes Git files, virtual environments, Python caches and test artifacts.
+- Avoids including local files in the build context.
+- Reduces the size of the Docker build context and improves cache performance.
+
+### Build and run the image
 ```bash
 docker build -t tic-tac-toe-ynov .
 docker run -it --rm tic-tac-toe-ynov
 ```
 
-### Alternative Windows si `docker` n’est pas reconnu
+### Windows alternative if `docker` is not recognized
 ```powershell
 $env:Path = 'C:\Program Files\Docker\Docker\resources\bin;' + $env:Path
 docker build -t tic-tac-toe-ynov .
 docker run -it --rm tic-tac-toe-ynov
 ```
+
+### Docker Compose (compose.yaml)
+
+- A `compose.yaml` file was added to simplify local execution and testing.
+- The file declares only the `app` service (no external database is required for this CLI).
+- No sensitive configuration is hard-coded in `compose.yaml`: all values are provided via environment variables.
+- A committed `.env.example` file shows the expected variable structure. Create a local `.env` (not committed) for your tests.
+- The repository ignores `.env` in `.gitignore` to avoid committing local secrets.
+- The `app` service defines a minimal `healthcheck` and mounts the project directory read-only in the container to protect source files.
+
+To bring the stack up (if Docker is installed) from the project root:
+
+```bash
+docker compose up --build
+```
+
+Example variables present in `.env.example`: `APP_CONTAINER_NAME`, `APP_IMAGE_NAME`, `APP_WORKDIR`, `APP_USER`, `APP_COMMAND`, `APP_ENV`, `PYTHONDONTWRITEBYTECODE`, `PYTHONUNBUFFERED`.
+
+Note: if Docker is not available on Windows, add the Docker binary to your `PATH` (see the "Windows alternative" section above) and then rerun `docker compose`.
 
 ## Pre-commit Hooks
 This project uses the `pre-commit` framework to ensure code quality. The following hooks are configured:
@@ -69,4 +89,3 @@ This project follows semantic versioning. Tags will be created for each release.
 
 ## Contribution
 All commits must follow the conventional commit format. Please create merge requests or pull requests for any changes, and ensure discussions are documented.
-
