@@ -8,8 +8,9 @@ spec:
   type: ClusterIP
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }} # Doit cibler un port, même s'il n'est pas écouté
+      targetPort: http
+      name: http
       protocol: TCP
   selector:
-    app: {{ include "tic-tac-toe.fullname" . }}
+    {{- include "tic-tac-toe.selectorLabels" . | nindent 4 }}
 {{- end }}

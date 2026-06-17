@@ -25,4 +25,4 @@ spec:
                 name: {{ include "tic-tac-toe.fullname" . }}
                 port:
                   number: {{ .Values.service.port }}
-{{- end }}docker info
+{{- end }}

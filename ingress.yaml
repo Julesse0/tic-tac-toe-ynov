@@ -4,6 +4,8 @@ kind: Ingress
 metadata:
   name: {{ include "tic-tac-toe.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tic-tac-toe.labels" . | nindent 4 }}
 spec:
   rules:
     - host: {{ .Values.ingress.host | quote }}
@@ -15,5 +17,5 @@ spec:
               service:
                 name: {{ include "tic-tac-toe.fullname" . }}
                 port:
-                  number: {{ .Values.service.port }}
+                  name: http
 {{- end }}

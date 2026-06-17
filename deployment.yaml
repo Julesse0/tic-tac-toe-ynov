@@ -3,20 +3,26 @@ kind: Deployment
 metadata:
   name: {{ include "tic-tac-toe.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tic-tac-toe.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "tic-tac-toe.fullname" . }}
+      {{- include "tic-tac-toe.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ include "tic-tac-toe.fullname" . }}
+        {{- include "tic-tac-toe.labels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           stdin: true
           tty: true
           envFrom:
