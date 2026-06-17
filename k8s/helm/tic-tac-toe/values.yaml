@@ -1,19 +1,24 @@
+nameOverride: ""
+fullnameOverride: ""
+
 replicaCount: 1
 
 image:
   repository: tic-tac-toe-ynov
   pullPolicy: IfNotPresent
-  # Pour des déploiements prévisibles, évitez "latest".
-  # Laissez vide pour utiliser la valeur de .Chart.AppVersion.
-  tag: ""
+  tag: "latest"
 
 service:
   enabled: false
-  port: 80 # Port fictif car l'app n'expose rien
+  type: ClusterIP
+  port: 80
 
 ingress:
   enabled: false
+  className: ""
   host: chart-example.local
+  path: /
+  pathType: Prefix
 
 config:
   PYTHONUNBUFFERED: "1"

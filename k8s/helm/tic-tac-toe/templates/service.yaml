@@ -3,15 +3,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "tic-tac-toe.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "tic-tac-toe.labels" . | nindent 4 }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ .Values.service.port }}
       protocol: TCP
   selector:
     {{- include "tic-tac-toe.selectorLabels" . | nindent 4 }}
-{{- end }}
+{{- end -}}

@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "tic-tac-toe.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "tic-tac-toe.labels" . | nindent 4 }}
 spec:
@@ -13,16 +12,14 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "tic-tac-toe.labels" . | nindent 8 }}
+        {{- include "tic-tac-toe.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "tic-tac-toe.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+          stdin: true
+          tty: true
           envFrom:
             - configMapRef:
                 name: {{ include "tic-tac-toe.fullname" . }}-config
@@ -33,14 +30,10 @@ spec:
           livenessProbe:
             exec:
               command:
-                - python
-                - -m
-                - py_compile
+                - cat
                 - tic_tac_toe.py
           readinessProbe:
             exec:
               command:
-                - python
-                - -m
-                - py_compile
+                - cat
                 - tic_tac_toe.py

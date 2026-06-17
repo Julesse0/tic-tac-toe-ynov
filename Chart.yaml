@@ -3,4 +3,4 @@ name: tic-tac-toe
 description: Un chart Helm pour le jeu CLI Tic Tac Toe
 type: application
 version: 0.1.0
-appVersion: "latest"
+appVersion: "0.1.0"
