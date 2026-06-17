@@ -1,0 +1,12 @@
+apiVersion: v2
+name: tic-tac-toe
+description: Chart Helm pour le jeu CLI Tic Tac Toe — déploiement Kubernetes paramétrable
+type: application
+version: 0.1.0
+appVersion: "latest"
+maintainers:
+  - name: Votre Groupe
+keywords:
+  - tic-tac-toe
+  - python
+  - cli

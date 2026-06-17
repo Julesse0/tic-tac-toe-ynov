@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tic-tac-toe
+  namespace: tic-tac-toe
+  annotations:
+spec:
+  type: ClusterIP
+  selector:
+    app: tic-tac-toe
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80

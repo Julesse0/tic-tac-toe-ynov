@@ -1,0 +1,51 @@
+# Nombre de réplicas du pod
+replicaCount: 1
+
+# Image Docker
+image:
+  repository: tic-tac-toe-ynov
+  pullPolicy: IfNotPresent
+  # Surcharge le appVersion du Chart.yaml si renseigné
+  tag: "latest"
+
+# Service (fictif pour une app CLI, désactivé par défaut)
+service:
+  enabled: false
+  type: ClusterIP
+  port: 80
+
+# Ingress (désactivé par défaut)
+ingress:
+  enabled: false
+  host: tic-tac-toe.local
+  className: traefik
+  annotations: {}
+
+config:
+  PYTHONUNBUFFERED: "1"
+  APP_ENV: "production"
+
+secret:
+  DUMMY_SECRET: "super_secret_value"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+probes:
+  liveness:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 30
+  readiness:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+podAnnotations: {}
+
+podLabels: {}
