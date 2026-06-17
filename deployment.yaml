@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tic-tac-toe.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "tic-tac-toe.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "tic-tac-toe.fullname" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          stdin: true
+          tty: true
+          envFrom:
+            - configMapRef:
+                name: {{ include "tic-tac-toe.fullname" . }}-config
+            - secretRef:
+                name: {{ include "tic-tac-toe.fullname" . }}-secret
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - tic_tac_toe.py
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - tic_tac_toe.py

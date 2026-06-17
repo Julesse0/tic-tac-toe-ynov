@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tic-tac-toe
+  namespace: tic-tac-toe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tic-tac-toe
+  template:
+    metadata:
+      labels:
+        app: tic-tac-toe
+    spec:
+      containers:
+      - name: tic-tac-toe
+        image: tic-tac-toe-ynov:latest
+        imagePullPolicy: IfNotPresent
+        stdin: true
+        tty: true
+        envFrom:
+        - configMapRef:
+            name: tic-tac-toe-config
+        - secretRef:
+            name: tic-tac-toe-secret
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        livenessProbe:
+          exec:
+            command: ["cat", "tic_tac_toe.py"]
+          initialDelaySeconds: 5
+        readinessProbe:
+          exec:
+            command: ["cat", "tic_tac_toe.py"]
+          initialDelaySeconds: 5

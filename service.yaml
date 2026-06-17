@@ -1,0 +1,15 @@
+{{- if .Values.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tic-tac-toe.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }} # Doit cibler un port, même s'il n'est pas écouté
+      protocol: TCP
+  selector:
+    app: {{ include "tic-tac-toe.fullname" . }}
+{{- end }}

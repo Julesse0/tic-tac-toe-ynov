@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tic-tac-toe-config
+  namespace: tic-tac-toe
+data:
+  PYTHONUNBUFFERED: "1"
+  APP_ENV: "production"
