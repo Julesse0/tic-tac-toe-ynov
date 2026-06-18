@@ -72,54 +72,6 @@ Variables d'exemple présentes dans `.env.example` : `APP_CONTAINER_NAME`, `APP_
 Note : si Docker n'est pas disponible sous Windows, ajoutez le binaire Docker à votre `PATH` (voir la section « Alternative Windows » ci-dessus), puis relancez `docker compose`.
 
 ## Part 3 - Kubernetes & Helm (Atelier)
-### tic-tac-toe
-
-Chart Helm pour packager le jeu CLI Tic Tac Toe.
-
-### Fichiers principaux
-
-- `Chart.yaml` : métadonnées du chart.
-- `values.yaml` : paramètres modifiables.
-- `templates/` : manifests Kubernetes rendus par Helm.
-
-### Paramètres exposés
-
-- `image.repository` et `image.tag`
-- `replicaCount`
-- `config` pour la ConfigMap
-- `ingress.enabled` et `ingress.host`
-- `resources.requests` et `resources.limits`
-
-### Validation
-
-   ```bash
-   k3d cluster create ynov-cluster --image rancher/k3s:v1.27.4-k3s1 --api-port 127.0.0.1:6550                                                 
-
-   helm lint k8s/helm/tic-tac-toe
-   helm template k8s/helm/tic-tac-toe
-   helm install tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --create-namespace
-   helm upgrade tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --set replicaCount=2 --set config.APP_ENV=staging
-   helm uninstall tic-tac-toe-app -n atelier-k8s
-   ```
-
-Le namespace utilisé pour la validation est `tic-tac-toe`.
-
-### Exemple d'upgrade
-
-   ```bash
-      helm upgrade mon-app k8s/helm/tic-tac-toe -n tic-tac-toe --set replicaCount=3 --set config.APP_ENV=preprod
-   ```
-
-### Architecture et Justification des choix techniques
-L'application `tic-tac-toe-ynov` est un jeu en ligne de commande (CLI) pur. Elle n'expose aucun port réseau et attend des interactions de l'utilisateur via l'entrée standard (`stdin`).
-
-Par conséquent, les manifestes Kubernetes ont été adaptés à cette réalité :
-- **Deployment** : Utilise les directives `stdin: true` et `tty: true` pour garder le processus Python ouvert et interactif.
-- **Service, Ingress & PVC** : Volontairement ignorés. S'agissant d'un jeu interactif dans le terminal sans interface web, les objets `Service` et `Ingress` sont inapplicables car il n'y a aucun service réseau à exposer. De plus, l'application étant sans état (stateless), un `PersistentVolumeClaim` (PVC) n'est pas requis.
-- **ConfigMap** : Externalise la configuration environnementale non-sensible (ex: `PYTHONUNBUFFERED`, `APP_ENV`).
-- **Secret** : Ajouté pour démontrer la capacité à sécuriser des données (ex: fausses clés API ou variables sensibles injectées dans le conteneur).
-- **Probes (Liveness/Readiness)** : Une commande `cat tic_tac_toe.py` est exécutée. Si le fichier est présent et accessible, le conteneur est considéré comme sain.
-
 ### Déploiement étape 1 : manifestes classiques
 
 1. Assurez-vous d'avoir construit l'image et de l'avoir importée dans votre cluster K3D :
@@ -140,23 +92,58 @@ Par conséquent, les manifestes Kubernetes ont été adaptés à cette réalité
    ```
 
 ### Déploiement étape 2 : chart Helm
+### tic-tac-toe
+
+Chart Helm pour packager le jeu CLI Tic Tac Toe.
+
+### Fichiers principaux
+
+- `Chart.yaml` : métadonnées du chart.
+- `values.yaml` : paramètres modifiables.
+- `templates/` : manifests Kubernetes rendus par Helm.
+
+### Paramètres exposés
+
+- `image.repository` et `image.tag`
+- `replicaCount`
+- `config` pour la ConfigMap
+- `ingress.enabled` et `ingress.host`
+- `resources.requests` et `resources.limits`
 
 Le chart Helm permet de packager et de paramétrer facilement ce déploiement.
 
-1. Vérification et génération des manifests :
+### Architecture et Justification des choix techniques
+L'application `tic-tac-toe-ynov` est un jeu en ligne de commande (CLI) pur. Elle n'expose aucun port réseau et attend des interactions de l'utilisateur via l'entrée standard (`stdin`).
+
+Par conséquent, les manifestes Kubernetes ont été adaptés à cette réalité :
+- **Deployment** : Utilise les directives `stdin: true` et `tty: true` pour garder le processus Python ouvert et interactif.
+- **Service, Ingress & PVC** : Volontairement ignorés. S'agissant d'un jeu interactif dans le terminal sans interface web, les objets `Service` et `Ingress` sont inapplicables car il n'y a aucun service réseau à exposer. De plus, l'application étant sans état (stateless), un `PersistentVolumeClaim` (PVC) n'est pas requis.
+- **ConfigMap** : Externalise la configuration environnementale non-sensible (ex: `PYTHONUNBUFFERED`, `APP_ENV`).
+- **Secret** : Ajouté pour démontrer la capacité à sécuriser des données (ex: fausses clés API ou variables sensibles injectées dans le conteneur).
+- **Probes (Liveness/Readiness)** : Une commande `cat tic_tac_toe.py` est exécutée. Si le fichier est présent et accessible, le conteneur est considéré comme sain.
+
+
+1. Iniatialisation image docker et import dans cluster k3d 
+   ```bash
+      docker build -t tic-tac-toe-ynov:latest .
+      k3d cluster create ynov-cluster --image rancher/k3s:v1.27.4-k3s1 --api-port 127.0.0.1:6550                                                 
+      k3d image import tic-tac-toe-ynov:latest -c ynov-cluster
+      ```
+
+2. Vérification et génération des manifests :
    ```bash
    helm lint k8s/helm/tic-tac-toe
    helm template k8s/helm/tic-tac-toe
    ```
-2. Installation :
+3. Installation :
    ```bash
    helm install tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --create-namespace               
    ```
-3. Mise à jour (upgrade) via surcharge de `values.yaml` :
+4. Mise à jour (upgrade) via surcharge de `values.yaml` :
    ```bash
    helm upgrade tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --set replicaCount=2 --set config. APP_ENV=staging    
    ```
-4. Désinstallation :
+5. Désinstallation :
    ```bash
    helm uninstall tic-tac-toe-app -n atelier-k8s 
    ```
