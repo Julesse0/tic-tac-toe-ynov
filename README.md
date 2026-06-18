@@ -72,6 +72,43 @@ Variables d'exemple présentes dans `.env.example` : `APP_CONTAINER_NAME`, `APP_
 Note : si Docker n'est pas disponible sous Windows, ajoutez le binaire Docker à votre `PATH` (voir la section « Alternative Windows » ci-dessus), puis relancez `docker compose`.
 
 ## Part 3 - Kubernetes & Helm (Atelier)
+### tic-tac-toe
+
+Chart Helm pour packager le jeu CLI Tic Tac Toe.
+
+### Fichiers principaux
+
+- `Chart.yaml` : métadonnées du chart.
+- `values.yaml` : paramètres modifiables.
+- `templates/` : manifests Kubernetes rendus par Helm.
+
+### Paramètres exposés
+
+- `image.repository` et `image.tag`
+- `replicaCount`
+- `config` pour la ConfigMap
+- `ingress.enabled` et `ingress.host`
+- `resources.requests` et `resources.limits`
+
+### Validation
+
+   ```bash
+   k3d cluster create ynov-cluster --image rancher/k3s:v1.27.4-k3s1 --api-port 127.0.0.1:6550                                                 
+
+   helm lint k8s/helm/tic-tac-toe
+   helm template k8s/helm/tic-tac-toe
+   helm install tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --create-namespace
+   helm upgrade tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --set replicaCount=2 --set config.APP_ENV=staging
+   helm uninstall tic-tac-toe-app -n atelier-k8s
+   ```
+
+Le namespace utilisé pour la validation est `tic-tac-toe`.
+
+### Exemple d'upgrade
+
+   ```bash
+      helm upgrade mon-app k8s/helm/tic-tac-toe -n tic-tac-toe --set replicaCount=3 --set config.APP_ENV=preprod
+   ```
 
 ### Architecture et Justification des choix techniques
 L'application `tic-tac-toe-ynov` est un jeu en ligne de commande (CLI) pur. Elle n'expose aucun port réseau et attend des interactions de l'utilisateur via l'entrée standard (`stdin`).
@@ -89,6 +126,7 @@ Par conséquent, les manifestes Kubernetes ont été adaptés à cette réalité
    ```bash
    docker build -t tic-tac-toe-ynov:latest .
    k3d cluster create ynov-cluster --image rancher/k3s:v1.27.4-k3s1 --api-port 127.0.0.1:6550                                                 
+   k3d image import tic-tac-toe-ynov:latest -c ynov-cluster
    ```
 2. Appliquez les manifestes :
    ```bash
@@ -97,8 +135,8 @@ Par conséquent, les manifestes Kubernetes ont été adaptés à cette réalité
    ```
 3. **Jouer au jeu** : comme il s'agit d'un jeu CLI, attachez-vous au Pod pour jouer :
    ```bash
-   kubectl get pods -n tic-tac-toe # Copiez le nom du pod
-   kubectl attach -it <nom-du-pod> -n tic-tac-toe
+   kubectl describe pod <pod>
+   kubectl logs <pod>
    ```
 
 ### Déploiement étape 2 : chart Helm
@@ -112,15 +150,15 @@ Le chart Helm permet de packager et de paramétrer facilement ce déploiement.
    ```
 2. Installation :
    ```bash
-   helm install mon-app k8s/helm/tic-tac-toe -n tic-tac-toe --create-namespace
+   helm install tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --create-namespace               
    ```
 3. Mise à jour (upgrade) via surcharge de `values.yaml` :
    ```bash
-   helm upgrade mon-app k8s/helm/tic-tac-toe -n tic-tac-toe --set replicaCount=2 --set config.APP_ENV=staging
+   helm upgrade tic-tac-toe-app k8s/helm/tic-tac-toe -n atelier-k8s --set replicaCount=2 --set config. APP_ENV=staging    
    ```
 4. Désinstallation :
    ```bash
-   helm uninstall mon-app -n tic-tac-toe
+   helm uninstall tic-tac-toe-app -n atelier-k8s 
    ```
 
 ## Pre-commit Hooks
