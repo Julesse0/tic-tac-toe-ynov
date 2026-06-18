@@ -3,7 +3,9 @@ replicaCount: 1
 image:
   repository: tic-tac-toe-ynov
   pullPolicy: IfNotPresent
-  tag: "latest"
+  # Pour des déploiements prévisibles, évitez "latest".
+  # Laissez vide pour utiliser la valeur de .Chart.AppVersion.
+  tag: ""
 
 service:
   enabled: false

@@ -35,10 +35,14 @@ spec:
           livenessProbe:
             exec:
               command:
-                - cat
+                - python
+                - -m
+                - py_compile
                 - tic_tac_toe.py
           readinessProbe:
             exec:
               command:
-                - cat
+                - python
+                - -m
+                - py_compile
                 - tic_tac_toe.py

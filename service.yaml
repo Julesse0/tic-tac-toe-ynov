@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: {{ include "tic-tac-toe.fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tic-tac-toe.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:

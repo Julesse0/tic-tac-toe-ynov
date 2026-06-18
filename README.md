@@ -88,7 +88,7 @@ Par conséquent, les manifestes Kubernetes ont été adaptés à cette réalité
 1. Assurez-vous d'avoir construit l'image et de l'avoir importée dans votre cluster K3D :
    ```bash
    docker build -t tic-tac-toe-ynov:latest .
-   k3d image import tic-tac-toe-ynov:latest -c <nom-de-votre-cluster-k3d>
+   k3d cluster create ynov-cluster --image rancher/k3s:v1.27.4-k3s1 --api-port 127.0.0.1:6550                                                 
    ```
 2. Appliquez les manifestes :
    ```bash
@@ -112,15 +112,15 @@ Le chart Helm permet de packager et de paramétrer facilement ce déploiement.
    ```
 2. Installation :
    ```bash
-   helm install mon-jeu k8s/helm/tic-tac-toe -n tic-tac-toe --create-namespace
+   helm install mon-app k8s/helm/tic-tac-toe -n tic-tac-toe --create-namespace
    ```
 3. Mise à jour (upgrade) via surcharge de `values.yaml` :
    ```bash
-   helm upgrade mon-jeu k8s/helm/tic-tac-toe -n tic-tac-toe --set replicaCount=2 --set config.APP_ENV=staging
+   helm upgrade mon-app k8s/helm/tic-tac-toe -n tic-tac-toe --set replicaCount=2 --set config.APP_ENV=staging
    ```
 4. Désinstallation :
    ```bash
-   helm uninstall mon-jeu -n tic-tac-toe
+   helm uninstall mon-app -n tic-tac-toe
    ```
 
 ## Pre-commit Hooks
